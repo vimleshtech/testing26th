@@ -1,0 +1,173 @@
+package selenium_1;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class testcode {
+
+	
+	static String[][] readData()
+	{	
+		
+		String data[][] = null;
+		
+		try
+		{
+			
+			//read the file 
+			FileInputStream fs = new FileInputStream("C:\\Users\\Tech Vision\\Desktop\\Book1.xls");
+			
+			//convert the file in excel workbook format
+			HSSFWorkbook book = new HSSFWorkbook(fs);
+			
+			//read worksheet by name 
+			HSSFSheet sheet  = book.getSheet("customer");
+			
+			int sc,rc,cc;
+			//get sheet count
+			sc = book.getNumberOfSheets();
+			//get no. of used rows 
+			rc = sheet.getPhysicalNumberOfRows();
+			//get no. of used cols
+			cc = sheet.getRow(0).getPhysicalNumberOfCells();
+			
+			System.out.println("sheet count :"+sc);
+			System.out.println("row count :"+rc);
+			System.out.println("col  count :"+cc);
+			
+			data = new String[rc][cc];
+			
+			for(int i=0; i<rc;i++)
+			{
+				HSSFRow row  = sheet.getRow(i);
+				HSSFCell cell = row.getCell(0);
+				data[rc][0]=cell.getStringCellValue();
+				//System.out.print(cell.getStringCellValue()+"\t");
+				cell = row.getCell(1);
+				data[rc][1] = cell.getStringCellValue();
+				//System.out.println(cell.getStringCellValue());
+			}
+			
+			
+				
+		}
+		catch (Exception e) {
+				System.out.println(e);
+		}
+		return data;
+	}
+	static void naukriTest(String u,String p)
+	{
+		WebDriver driver = new FirefoxDriver();
+		driver.get("https://www.naukri.com/");
+		
+		driver.findElement(By.id("login_Layer")).click();
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		
+		/*
+	List<WebElement> els=	driver.findElements(By.tagName("input"));
+		
+	System.out.println(els.size());
+	
+	for(WebElement el : els)
+	{
+		System.out.println(el.getAttribute("outerHTML"));
+	}
+*/		
+	
+		driver.findElement(By.name("email")).sendKeys(u);
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		
+		driver.findElement(By.name("PASSWORD")).sendKeys(p);		
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		
+		
+		driver.findElement(By.xpath("/html/body/div[9]/div[2]/div[2]/form/div[8]/button")).click();
+		
+		
+	}
+	
+	public static void main(String[] args) throws IOException {
+		
+		
+		String d[][] = 	readData();
+		
+		naukriTest(d[4][0],d[4][1]);
+		
+		
+		
+		/*
+		
+		FileInputStream fs =new FileInputStream("E:\\Eclipse Workspace\\selenium_1\\src\\selenium_1\\objects.properties");
+		
+		Properties prop = new Properties();
+		prop.load(fs);
+		
+		System.out.println(prop.getProperty("uid"));
+		
+		String data[][]= readExcel();
+		
+
+		WebDriver driver = new FirefoxDriver();
+		driver.get(prop.getProperty("url"));
+		
+		driver.findElement(By.id(prop.getProperty("uid"))).sendKeys(data[1][0]);
+		*/
+		
+	}
+
+	public static String[][] readExcel() throws IOException
+	{
+		
+		String data[][]=null;
+		
+		FileInputStream fs  =new FileInputStream("C:\\Users\\Tech Vision\\Desktop\\myvalue.xls");
+		HSSFWorkbook workbook =new HSSFWorkbook(fs);
+		
+		int sc,rc,cc;
+		sc = workbook.getNumberOfSheets();
+		
+		HSSFSheet sheet = workbook.getSheet("Sheet1");
+		rc = sheet.getPhysicalNumberOfRows();
+		
+		cc = sheet.getRow(0).getPhysicalNumberOfCells();
+		
+		//System.out.println("no. of sheets "+sc);
+		//System.out.println("no. of rows "+rc);
+		//System.out.println("no. of cols "+cc);
+		
+		data =new String[rc][cc];
+		
+		for(int i=0; i<rc;i++)
+		{
+			HSSFRow row = sheet.getRow(i);
+			HSSFCell cell = row.getCell(0);
+			//System.out.print(cell.getStringCellValue()+"\t");
+			
+			data[i][0] = cell.getStringCellValue();
+			cell = row.getCell(1);
+			data[i][1] = cell.getStringCellValue();
+			
+			//System.out.println(cell.getStringCellValue());
+			
+		
+			
+			
+		}
+		
+		return data;
+	}
+}
